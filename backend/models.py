@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, Float, String, Boolean
 from backend.database import Base
+from backend.gemini_service import generate_incident_summary
 
 
 class Incident(Base):
