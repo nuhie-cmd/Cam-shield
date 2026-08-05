@@ -44,4 +44,8 @@ while True:
         break
 
 cap.release()
+<<<<<<< HEAD
 cv2.destroyAllWindows()
+=======
+cv2.destroyAllWindows()
+>>>>>>> ec2c5b8005117b8a1b3d1c211eafa1f64cd31940
