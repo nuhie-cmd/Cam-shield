@@ -6,3 +6,7 @@ def detect_viewblock(frame, threshold=25):
     contrast=np.std(grey)
     blocked = contrast < threshold
     return blocked,contrast
+<<<<<<< HEAD
+ 
+=======
+>>>>>>> ec2c5b8005117b8a1b3d1c211eafa1f64cd31940
