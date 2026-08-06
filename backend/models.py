@@ -31,6 +31,12 @@ class Incident(Base):
     risk_level = Column(String)
     xai_explanation = Column(String)
 
+    confidence = Column(Float)
+    prediction = Column(String)
+    recommended_action = Column(String)
+    incident_type = Column(String)
+    camera_status = Column(String)
+
     # Evidence & Alerts
     alert_sent = Column(Boolean)
     evidence_path = Column(String)

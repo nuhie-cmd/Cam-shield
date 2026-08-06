@@ -3,6 +3,7 @@ Person Detector Module for CamShield
 Handles person-only object detection using Ultralytics YOLOv8n.
 """
 
+import os
 import json
 import logging
 import time
@@ -11,6 +12,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import cv2
 import numpy as np
 from ultralytics import YOLO
+
 
 # Configure module-level logger
 logger = logging.getLogger(__name__)
@@ -36,14 +38,28 @@ class PersonDetector:
 
     def __init__(
         self,
-        model_path: str = "yolov8n.pt",
+        model_path: Optional[str] = None,
         confidence_threshold: float = 0.5,
         device: str = "cpu"
     ) -> None:
-        self.model_path = model_path
         self.confidence_threshold = confidence_threshold
         self.device = device
         self.model: Optional[YOLO] = None
+
+        # Resolve model path across possible execution working directories
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+        possible_paths = [
+            model_path,
+            os.path.join(project_root, "yolov8n.pt"),
+            os.path.join(project_root, "detection", "yolov8n.pt"),
+            os.path.join(project_root, "dashboard", "yolov8n.pt"),
+            "yolov8n.pt"
+        ]
+        self.model_path = "yolov8n.pt"
+        for p in possible_paths:
+            if p and os.path.exists(p):
+                self.model_path = p
+                break
 
         self.load_model()
 
@@ -59,6 +75,7 @@ class PersonDetector:
         except Exception as e:
             logger.error(f"Failed to load YOLO model: {e}")
             raise RuntimeError(f"Critical error initializing PersonDetector: {e}") from e
+
 
     @staticmethod
     def _prepare_frame(frame: np.ndarray) -> Optional[np.ndarray]:

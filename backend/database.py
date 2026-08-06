@@ -1,8 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+from backend.config import DATABASE_URL
 
-# SQLite database path
-DATABASE_URL = "sqlite:///data/camshield.db"
 
 # Create database engine
 engine = create_engine(

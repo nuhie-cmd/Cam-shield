@@ -8,8 +8,8 @@ from backend.schemas import IncidentCreate
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="CamShield Backend")
 
+app = FastAPI(title="CamShield Backend")
 
 @app.get("/")
 def home():
@@ -52,6 +52,12 @@ def create_incident(
         risk_level=incident.fusion_output.risk_level,
         xai_explanation=incident.fusion_output.xai_explanation,
 
+        confidence=incident.confidence,
+        prediction=incident.prediction,
+        recommended_action=incident.recommended_action,
+        incident_type=incident.incident_type,
+        camera_status=incident.camera_status,
+
         alert_sent=False,
         evidence_path=""
     )
@@ -77,10 +83,54 @@ def get_latest_status(db: Session = Depends(get_db)):
 
     if latest is None:
         return {
-            "message": "No incidents found."
+            "timestamp": "",
+            "camera_id": "CAM-01",
+            "health_score": 100.0,
+            "camera_health": 100,
+            "blur_detected": False,
+            "tilt_detected": False,
+            "brightness_changed": False,
+            "person_detected": "NO",
+            "dwell_time": "0 sec",
+            "dwell_time_seconds": 0.0,
+            "approaching_camera": False,
+            "stream_disconnected": False,
+            "config_changed": False,
+            "threat_score": 0.0,
+            "risk_level": "LOW",
+            "xai_explanation": "Operating Normally",
+            "confidence": 1.0,
+            "prediction": "Operating Normally",
+            "recommended_action": "Monitor",
+            "incident_type": "None",
+            "camera_status": "ONLINE"
         }
 
-    return latest
+    return {
+        "id": latest.id,
+        "timestamp": latest.timestamp,
+        "camera_id": latest.camera_id,
+        "health_score": latest.health_score,
+        "camera_health": int(latest.health_score) if latest.health_score is not None else 100,
+        "blur_detected": latest.blur_detected,
+        "tilt_detected": latest.tilt_detected,
+        "brightness_changed": latest.brightness_changed,
+        "person_detected": "YES" if latest.person_detected else "NO",
+        "dwell_time": f"{int(latest.dwell_time_seconds or 0)} sec",
+        "dwell_time_seconds": latest.dwell_time_seconds,
+        "approaching_camera": latest.approaching_camera,
+        "stream_disconnected": latest.stream_disconnected,
+        "config_changed": latest.config_changed,
+        "threat_score": latest.threat_score,
+        "risk_level": latest.risk_level,
+        "xai_explanation": latest.xai_explanation,
+        "confidence": latest.confidence,
+        "prediction": latest.prediction,
+        "recommended_action": latest.recommended_action,
+        "incident_type": latest.incident_type,
+        "camera_status": latest.camera_status
+    }
+
 
 
 @app.get("/stats")

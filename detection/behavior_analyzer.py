@@ -1,12 +1,3 @@
-"""
-Behavior Analyzer Module for CamShield
-Classifies per-person behaviors (idle, walking, running, loitering) by
-analyzing the motion history maintained for each tracked ID.
-
-Designed to consume the output of Tracker.update() and produce labeled
-detection dicts that downstream modules (event_fusion, predictive_engine)
-can act on.
-"""
 
 import logging
 import math
@@ -16,9 +7,6 @@ from typing import Any, Deque, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
-# ---------------------------------------------------------------------------
-# Behavior labels
-# ---------------------------------------------------------------------------
 BEHAVIOR_IDLE = "idle"
 BEHAVIOR_WALKING = "walking"
 BEHAVIOR_RUNNING = "running"
@@ -48,21 +36,23 @@ class MotionHistory:
 
     def total_displacement(self) -> float:
         """Straight-line distance between oldest and newest position."""
-        if self.length < 2:
+        pts = list(self._positions)
+        if len(pts) < 2:
             return 0.0
-        x0, y0, _ = self._positions[0]
-        x1, y1, _ = self._positions[-1]
+        x0, y0, _ = pts[0]
+        x1, y1, _ = pts[-1]
         return math.hypot(x1 - x0, y1 - y0)
 
     def path_length(self) -> float:
         """Sum of step distances — total path travelled."""
         total = 0.0
-        pts = self._positions
+        pts = list(self._positions)
         for i in range(1, len(pts)):
             dx = pts[i][0] - pts[i - 1][0]
             dy = pts[i][1] - pts[i - 1][1]
             total += math.hypot(dx, dy)
         return total
+
 
     def average_speed_px_per_s(self) -> float:
         """Mean speed in pixels/second over the buffered window."""

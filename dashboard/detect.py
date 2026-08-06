@@ -2,6 +2,7 @@ from ultralytics import YOLO
 import cv2
 import os
 from tampering import check_tampering
+from test_videos.live_video import get_live_
 
 # Load YOLOse model
 model = YOLO("yolov8n.pt")

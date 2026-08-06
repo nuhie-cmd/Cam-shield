@@ -28,7 +28,14 @@ class FusionOutput(BaseModel):
 class IncidentCreate(BaseModel):
     timestamp: str
     camera_id: str
+
     video_integrity: VideoIntegrity
     person_behavior: PersonBehavior
     camera_security: CameraSecurity
     fusion_output: FusionOutput
+
+    confidence: float
+    prediction: str
+    recommended_action: str
+    incident_type: str
+    camera_status: str

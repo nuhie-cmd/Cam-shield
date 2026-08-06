@@ -24,16 +24,18 @@ class EvidenceManager:
         return filename
 
     def save_video(self):
-        if len(self.buffer)==0:
+        frames_snapshot = list(self.buffer)
+        if len(frames_snapshot) == 0:
             return None
-        timestamp=datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename=f"evidence/videos/{timestamp}.mp4"
-        height, width = self.buffer[0].shape[:2]
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"evidence/videos/{timestamp}.mp4"
+        height, width = frames_snapshot[0].shape[:2]
 
-        fourcc=cv2.VideoWriter_fourcc(*"mp4v")
+        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 
-        writer=cv2.VideoWriter( filename, fourcc, self.fps, (width,height))
-        for frame in self.buffer:
+        writer = cv2.VideoWriter(filename, fourcc, self.fps, (width, height))
+        for frame in frames_snapshot:
             writer.write(frame)
         writer.release()
-        return filename    
+        return filename
+    
