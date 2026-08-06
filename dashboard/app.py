@@ -54,7 +54,7 @@ if "threat_history" not in st.session_state:
 # ------------------------------
 def fetch_backend_status():
     try:
-        res = requests.get("http://127.0.0.1:8000/status", timeout=0.8)
+        res = requests.get("https://cam-shield.onrender.com", timeout=0.8)
         if res.status_code == 200:
             return res.json()
     except Exception:
@@ -63,7 +63,7 @@ def fetch_backend_status():
 
 def fetch_backend_incidents():
     try:
-        res = requests.get("http://127.0.0.1:8000/incidents", timeout=0.8)
+        res = requests.get("https://cam-shield.onrender.com", timeout=0.8)
         if res.status_code == 200:
             return res.json()
     except Exception:
